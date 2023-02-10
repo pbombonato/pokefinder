@@ -70,8 +70,13 @@ function filteredList() {
 <style scoped>
 .container {
   width: var(--searchbar-width);
-  margin-top: 3rem;
   border-radius: var(--searchbar-border-radius);
+  background-color: var(--searchbar-bg-color);
+}
+
+.container:hover,
+.container.active {
+  box-shadow: 0 1px 6px #20212447;
 }
 
 .input-container {
@@ -80,10 +85,6 @@ function filteredList() {
   border-radius: var(--searchbar-border-radius);
   display: flex;
   border: 1px solid var(--color-border);
-}
-
-.container:hover {
-  box-shadow: 0 1px 6px #20212447;
 }
 
 .container.active > .input-container {
@@ -122,7 +123,7 @@ input {
   border-top: none;
   border-bottom-left-radius: var(--searchbar-border-radius);
   border-bottom-right-radius: var(--searchbar-border-radius);
-  padding: 0 0 1.3rem;
+  padding: 0.7rem 0 1.3rem;
   display: none;
 }
 
@@ -143,6 +144,7 @@ input {
 
 .error {
   text-align: center;
+  padding-top: 1.3rem;
 }
 
 @media screen and (width <= 768px) {
