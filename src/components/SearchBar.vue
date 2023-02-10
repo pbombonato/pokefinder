@@ -5,6 +5,7 @@ import { ref } from "vue";
 let input = ref("");
 let inputActive = ref(false);
 
+// montar array a partir da API assim que o componente for montado
 const pokemonArray: string[] = [
   "Pikachu",
   "Squirtle",
@@ -18,9 +19,21 @@ const pokemonArray: string[] = [
 function filteredList() {
   return pokemonArray
     .filter((pokemon: string) =>
-      pokemon.toLowerCase().includes(input.value.toLowerCase())
+      pokemon.toLowerCase().startsWith(input.value.toLowerCase())
     )
-    .filter((filteredPokemon, index: number) => index < 5);
+    .map((pokemon: string) => {
+      function formattedString(string: string): string {
+        const separatedString: string =
+          input.value.toLowerCase() +
+          string.toLowerCase().replace(input.value.toLowerCase(), "").bold();
+        return (
+          separatedString.charAt(0).toUpperCase() + separatedString.slice(1)
+        );
+      }
+
+      return input.value ? formattedString(pokemon) : pokemon;
+    })
+    .filter((pokemon, index: number) => index < 6);
 }
 </script>
 
@@ -35,8 +48,9 @@ function filteredList() {
         type="text"
         v-model="input"
         placeholder="Pesquisar Pokémon..."
-        @focus="inputActive = true"
-        @blur="inputActive = false"
+        @input="inputActive = input ? true : false"
+        @blur="!input ? (inputActive = false) : ''"
+        autofocus
       />
     </div>
     <ul class="result-container">
@@ -44,8 +58,10 @@ function filteredList() {
         class="result"
         v-for="(pokemon, index) in filteredList()"
         :key="index"
-      >
-        <p>{{ pokemon }}</p>
+        v-html="pokemon"
+      ></li>
+      <li class="result error" v-if="!filteredList().length">
+        Nenhum Pokémon encontrado.
       </li>
     </ul>
   </div>
@@ -55,6 +71,7 @@ function filteredList() {
 .container {
   width: var(--searchbar-width);
   margin-top: 3rem;
+  border-radius: var(--searchbar-border-radius);
 }
 
 .input-container {
@@ -62,7 +79,11 @@ function filteredList() {
   height: 3rem;
   border-radius: var(--searchbar-border-radius);
   display: flex;
-  border: 1px solid;
+  border: 1px solid var(--color-border);
+}
+
+.container:hover {
+  box-shadow: 0 1px 6px #20212447;
 }
 
 .container.active > .input-container {
@@ -97,7 +118,7 @@ input {
 .result-container {
   width: 100%;
   padding: 0;
-  border: 1px solid;
+  border: 1px solid var(--color-border);
   border-top: none;
   border-bottom-left-radius: var(--searchbar-border-radius);
   border-bottom-right-radius: var(--searchbar-border-radius);
@@ -113,10 +134,15 @@ input {
   width: 100%;
   list-style: none;
   padding: 0.4rem 0 0.4rem 3.2rem;
+  cursor: default;
 }
 
-.result:hover {
+.result:hover:not(.error) {
   background-color: var(--color-background-mute);
+}
+
+.error {
+  text-align: center;
 }
 
 @media screen and (width <= 768px) {
