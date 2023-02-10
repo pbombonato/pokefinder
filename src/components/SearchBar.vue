@@ -1,23 +1,45 @@
 <script setup lang="ts">
+import { ref, onBeforeMount } from "vue";
+import axios from "axios";
+import LRU from "lru-cache";
 import SymbolLogo from "@/assets/images/symbol-logo.png";
-import { ref } from "vue";
 
-let input = ref("");
-let inputActive = ref(false);
+const input = ref("");
+const inputActive = ref(false);
 
-// montar array a partir da API assim que o componente for montado
-const pokemonArray: string[] = [
-  "Pikachu",
-  "Squirtle",
-  "Bulbasaur",
-  "Charmander",
-  "Charizard",
-  "Blastoise",
-  "Ivysaur",
-];
+let pokemonList: string[] = [];
+const cache = new LRU<string, string[]>({
+  max: 2,
+  ttl: 1000 * 60 * 60,
+}); // 1 hour cache
+
+// construir array de pokemons a partir da API antes do componente ser montado
+onBeforeMount(() => {
+  if (cache.has("pokemonList")) {
+    const cachedList = cache.get("pokemonList") as string[];
+    if (cachedList.length) {
+      pokemonList = cachedList;
+    }
+  }
+  if (pokemonList.length === 0) {
+    axios
+      .get("https://pokeapi.co/api/v2/pokemon/?limit=1279")
+      .then((response) => response.data.results)
+      .then((pokemons) =>
+        pokemons.map((pokemon: { name: string }) => pokemon.name)
+      )
+      .then((pokemons) => {
+        pokemonList = [...pokemons];
+        cache.set("pokemonList", pokemonList);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+});
 
 function filteredList() {
-  return pokemonArray
+  return pokemonList
     .filter((pokemon: string) =>
       pokemon.toLowerCase().startsWith(input.value.toLowerCase())
     )
@@ -81,7 +103,7 @@ function filteredList() {
 
 .input-container {
   width: 100%;
-  height: 3rem;
+  height: 3.5rem;
   border-radius: var(--searchbar-border-radius);
   display: flex;
   border: 1px solid var(--color-border);
@@ -108,6 +130,7 @@ input {
   width: 100%;
   border: none;
   outline: none;
+  font-size: 1rem;
   border-top-right-radius: var(--searchbar-border-radius);
   border-bottom-right-radius: var(--searchbar-border-radius);
 }
