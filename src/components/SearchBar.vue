@@ -2,18 +2,20 @@
 import { ref, onBeforeMount } from "vue";
 import axios from "axios";
 import LRU from "lru-cache";
+
 import SymbolLogo from "@/assets/images/symbol-logo.png";
 
 const input = ref("");
 const inputActive = ref(false);
 
 let pokemonList: string[] = [];
+
 const cache = new LRU<string, string[]>({
   max: 2,
   ttl: 1000 * 60 * 60,
 }); // 1 hour cache
 
-// construir array de pokemons a partir da API antes do componente ser montado
+// construir array de pokemons a partir da API (ou do cache) antes do componente ser montado
 onBeforeMount(() => {
   if (cache.has("pokemonList")) {
     const cachedList = cache.get("pokemonList") as string[];
@@ -26,7 +28,9 @@ onBeforeMount(() => {
       .get("https://pokeapi.co/api/v2/pokemon/?limit=1279")
       .then((response) => response.data.results)
       .then((pokemons) =>
-        pokemons.map((pokemon: { name: string }) => pokemon.name)
+        pokemons.map((pokemon: { name: string }) =>
+          pokemon.name.replace(/-/g, " ")
+        )
       )
       .then((pokemons) => {
         pokemonList = [...pokemons];
@@ -44,13 +48,26 @@ function filteredList() {
       pokemon.toLowerCase().startsWith(input.value.toLowerCase())
     )
     .map((pokemon: string) => {
-      function formattedString(string: string): string {
+      function formattedString(pokemonName: string): string {
         const separatedString: string =
           input.value.toLowerCase() +
-          string.toLowerCase().replace(input.value.toLowerCase(), "").bold();
-        return (
-          separatedString.charAt(0).toUpperCase() + separatedString.slice(1)
-        );
+          pokemonName
+            .toLowerCase()
+            .replace(input.value.toLowerCase(), "")
+            .bold();
+
+        function capitalFirstLetter(eachPokemonName: string) {
+          return (
+            eachPokemonName.charAt(0).toUpperCase() + eachPokemonName.slice(1)
+          );
+        }
+
+        const result = separatedString
+          .split(" ")
+          .map((eachPokemonName: string) => capitalFirstLetter(eachPokemonName))
+          .join(" ");
+
+        return result;
       }
 
       return input.value ? formattedString(pokemon) : pokemon;
