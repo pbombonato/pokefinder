@@ -35,8 +35,8 @@
 
 /* Dimensões */
 :root {
-  --searchbar-width: 80vw;
-  --searchbar-border-radius: 1.7rem;
+  --searchbar-width: 50vw;
+  --searchbar-border-radius: 1.5rem;
   --logo-size: 20rem;
 }
 
