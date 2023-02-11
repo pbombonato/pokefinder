@@ -1,5 +1,7 @@
 # PokéFinder (en-US)
 
+[Click here to visit the website](https://pokefinder-pbombonato.vercel.app/)
+
 ## Overview
 
 Welcome to PokéFinder, a website designed to help users search for their favorite Pokémon! This project was created using Vue, TypeScript, and Vue Router. As a junior frontend developer, I wanted to challenge myself and learn something new, so I took on this technical assessment with the goal of creating a website that allows the user to search for pokemons and retrieve their name, photo, evolutions, and stats using the PokeAPI v2. Despite being a React JS developer with no prior experience in Vue or TypeScript, I was able to complete the project within 2 days, demonstrating my fast learning capability.
@@ -14,6 +16,7 @@ I am a technician in Visual Communication (Graphic design), so I took on the cha
 - Clickable results
 - Specific Pokémon page displaying the Pokémon's info, including name, image, types, stats, evolutions, and evolution images
 - Ability to search for another Pokémon from the Pokémon page using the search bar on the header
+- Access the website on different devices
 
 ## Tech Stack
 
@@ -46,6 +49,8 @@ This project was a great learning opportunity for me as a junior frontend develo
 
 # PokéFinder (pt-BR)
 
+[Clique aqui para visitar o site!](https://pokefinder-pbombonato.vercel.app/)
+
 ## Visão geral
 
 Bem-vindo ao PokéFinder, um site projetado para ajudar os usuários a procurar seus Pokémon favoritos! Este projeto foi criado usando Vue, TypeScript e Vue Router. Como desenvolvedor front-end júnior, eu queria me desafiar e aprender algo novo, então aceitei este teste técnico que tinha como requisito criar um site que permita ao usuário procurar pokemons e recuperar seus nomes, fotos, evoluções e estatísticas usando Vue e a PokeAPI v2. Apesar de ser um desenvolvedor React JS sem experiência prévia em Vue ou TypeScript, consegui concluir o projeto em 2 dias, demonstrando minha capacidade de aprendizado rápido.
@@ -60,6 +65,7 @@ Sou técnico em Comunicação Visual (design gráfico), então aceitei o desafio
 - Resultados clicáveis
 - Página específica de Pokémon exibindo as informações do Pokémon, incluindo nome, imagem, tipos, estatísticas, evoluções e imagens de evoluções
 - Capacidade de procurar outro Pokémon a partir da página de Pokémon usando a barra de pesquisa no cabeçalho
+- Capacidade de acessar o site através de diferentes dispositivos
 
 ## Tecnologias
 
