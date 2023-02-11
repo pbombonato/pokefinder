@@ -1,68 +1,86 @@
-# pokefinder
+# PokéFinder (en-US)
 
-This template should help get you started developing with Vue 3 in Vite.
+## Overview
 
-## Recommended IDE Setup
+Welcome to PokéFinder, a website designed to help users search for their favorite Pokémon! This project was created using Vue, TypeScript, and Vue Router. As a junior frontend developer, I wanted to challenge myself and learn something new, so I took on this technical assessment with the goal of creating a website that allows the user to search for pokemons and retrieve their name, photo, evolutions, and stats using the PokeAPI v2. Despite being a React JS developer with no prior experience in Vue or TypeScript, I was able to complete the project within 2 days, demonstrating my fast learning capability.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Design
 
-## Type Support for `.vue` Imports in TS
+I am a technician in Visual Communication (Graphic design), so I took on the challenge of creating the logo, choosing the colors and fonts to use on this project. The design is simple and straightforward, as I was running against time to finish the project in time.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+## Features
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+- Search bar for Pokémon
+- Clickable results
+- Specific Pokémon page displaying the Pokémon's info, including name, image, types, stats, evolutions, and evolution images
+- Ability to search for another Pokémon from the Pokémon page using the search bar on the header
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+## Tech Stack
 
-## Customize configuration
+- Vue
+- create-vue powered by Vite (faster than Webpack)
+- TypeScript
+- Vue Router
+- LRU Cache
+- Axios
+- API Consumption
+- Accessibility features
+- Vercel
+- CSS3, HTML5, JS
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Future Improvements
 
-## Project Setup
+- Implementation of Pinia, Vitest and Cypress
+- Separation of components into smaller, more organized pieces
+- Inclusion of icons for design purposes
+- Code review and bug fixing
+- Addition of new functionalities and information
 
-```sh
-npm install
-```
+## Conclusion
 
-### Compile and Hot-Reload for Development
+This project was a great learning opportunity for me as a junior frontend developer. I was able to challenge myself by using new technologies and learning on the fly. The end result is a functional website that meets the basic requirements, and I am excited to continue improving it in the future.
 
-```sh
-npm run dev
-```
+<hr />
 
-### Type-Check, Compile and Minify for Production
+# PokéFinder (pt-BR)
 
-```sh
-npm run build
-```
+## Visão geral
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+Bem-vindo ao PokéFinder, um site projetado para ajudar os usuários a procurar seus Pokémon favoritos! Este projeto foi criado usando Vue, TypeScript e Vue Router. Como desenvolvedor front-end júnior, eu queria me desafiar e aprender algo novo, então aceitei este teste técnico que tinha como requisito criar um site que permita ao usuário procurar pokemons e recuperar seus nomes, fotos, evoluções e estatísticas usando Vue e a PokeAPI v2. Apesar de ser um desenvolvedor React JS sem experiência prévia em Vue ou TypeScript, consegui concluir o projeto em 2 dias, demonstrando minha capacidade de aprendizado rápido.
 
-```sh
-npm run test:unit
-```
+## Design
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+Sou técnico em Comunicação Visual (design gráfico), então aceitei o desafio de criar o logotipo, escolher as cores e as fontes a serem usadas neste projeto. O design é simples e direto ao ponto, já que eu estava correndo contra o tempo para concluir o projeto a tempo.
 
-```sh
-npm run test:e2e:dev
-```
+## Recursos
 
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
+- Barra de pesquisa para Pokémon
+- Resultados clicáveis
+- Página específica de Pokémon exibindo as informações do Pokémon, incluindo nome, imagem, tipos, estatísticas, evoluções e imagens de evoluções
+- Capacidade de procurar outro Pokémon a partir da página de Pokémon usando a barra de pesquisa no cabeçalho
 
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
+## Tecnologias
 
-```sh
-npm run build
-npm run test:e2e
-```
+- Vue
+- Create-vue powered by Vite (mais rápido que Webpack)
+- TypeScript
+- Vue Router
+- LRU Cache
+- Axios
+- Consumo de API
+- Recursos de acessibilidade
+- Vercel
+- CSS3, HTML5, JS
 
-### Lint with [ESLint](https://eslint.org/)
+## Melhorias futuras
 
-```sh
-npm run lint
-```
+- Implementação de Pinia, Vitest e Cypress
+    - Pesquisei e aprendi sobre eles, porém não consegui implementá-los a tempo
+- Separação de componentes em peças menores e mais organizadas
+- Inclusão de ícones para fins de design
+- Revisão de código e correção de bugs
+- Adição de novas funcionalidades e informações
+
+## Conclusão
+
+Este projeto foi uma ótima oportunidade de aprendizado para mim como desenvolvedor front-end júnior. Eu pude me desafiar ao usar novas tecnologias e aprender ao longo do caminho. O resultado final é um site funcional que atende aos requisitos básicos e estou animado para continuar melhorando-o no futuro.
