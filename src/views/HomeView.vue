@@ -14,8 +14,8 @@ import Logo from "../assets/images/vertical-logo.png";
 
 <style scoped>
 main {
-  min-height: 100vh;
-  min-width: 100vw;
+  min-height: 95vh;
+  min-width: 95vw;
   background-color: var(--color-background);
 }
 

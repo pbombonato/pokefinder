@@ -256,7 +256,8 @@ div {
 }
 
 main {
-  width: 100%;
+  min-height: 83vh;
+  min-width: 95vw;
 }
 
 main > div {

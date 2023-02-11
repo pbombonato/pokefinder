@@ -100,7 +100,7 @@ function filteredList() {
     class="container"
     :class="{ active: inputActive, header: props.header }"
   >
-  <label for="searchbar" class="hidden-visually">Barra de pesquisa: </label>
+    <label for="searchbar" class="hidden-visually">Barra de pesquisa: </label>
     <div class="input-container">
       <span
         class="symbol-logo"
