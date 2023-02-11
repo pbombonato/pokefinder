@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from "vue";
 import { RouterLink } from "vue-router";
+import router from "@/router";
 import axios from "axios";
 import LRU from "lru-cache";
 
@@ -44,6 +45,12 @@ onBeforeMount(() => {
       });
   }
 });
+
+function handleKeyUp(event: KeyboardEvent) {
+  if (event.key === "Enter" && filteredList().length) {
+    router.push({ path: `${formatPokemonName(filteredList()[0])}` });
+  }
+}
 
 function formatPokemonName(pokemon: string) {
   const pokemonName = pokemon
@@ -100,6 +107,7 @@ function filteredList() {
         placeholder="Pesquisar Pokémon..."
         @input="inputActive = input ? true : false"
         @blur="!input ? (inputActive = false) : ''"
+        @keyup="handleKeyUp"
         autofocus
       />
     </div>
