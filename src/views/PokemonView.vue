@@ -195,12 +195,11 @@ onBeforeMount(async function () {
               {{ type }}
             </li>
           </ul>
-          
         </div>
 
         <div class="stats-container">
           <h2>Estatísticas</h2>
-          
+
           <table>
             <tr v-for="(stat, index) in pokemonInfo.stats" :key="index">
               <td class="stat-title">
@@ -211,7 +210,8 @@ onBeforeMount(async function () {
           </table>
         </div>
         <div class="evolutions-container">
-          <h2>Evoluções</h2><br />
+          <h2>Evoluções</h2>
+          <br />
           <ul>
             <li
               v-for="(evolution, index) in pokemonInfo.evolutions.names"
@@ -366,7 +366,7 @@ a {
     width: 80vw;
   }
   .stat-title {
-    padding-right:0;
+    padding-right: 0;
     text-align: left;
   }
 
@@ -382,7 +382,7 @@ a {
     margin-top: 2vh;
     display: flex;
     flex-direction: column;
-    width: 100%
+    width: 100%;
   }
 
   .evolutions-container li {
