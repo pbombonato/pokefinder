@@ -195,12 +195,12 @@ onBeforeMount(async function () {
               {{ type }}
             </li>
           </ul>
-          <hr />
+          
         </div>
 
         <div class="stats-container">
           <h2>Estatísticas</h2>
-          <hr />
+          
           <table>
             <tr v-for="(stat, index) in pokemonInfo.stats" :key="index">
               <td class="stat-title">
@@ -209,9 +209,7 @@ onBeforeMount(async function () {
               <td class="stat-value">{{ stat.base_stat }}</td>
             </tr>
           </table>
-          <hr />
         </div>
-
         <div class="evolutions-container">
           <h2>Evoluções</h2>
           <ul>
@@ -225,6 +223,7 @@ onBeforeMount(async function () {
                   :alt="evolution"
                   class="evolution-img"
                 />
+                <br />
                 {{ capitalFirstLetter(evolution) }}
               </RouterLink>
             </li>
@@ -236,6 +235,14 @@ onBeforeMount(async function () {
 </template>
 
 <style scoped>
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+}
+
 li {
   list-style: none;
 }
@@ -277,14 +284,24 @@ main > div {
   padding-left: 1.5rem;
 }
 
-.stats-container td {
-  padding-right: 5.5rem;
+.stat-title {
+  padding-right: 18rem;
+}
+
+table {
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+table .stat-value {
+  text-align: end;
+  padding-right: 0;
 }
 
 .evolutions-container > ul {
   display: flex;
-  justify-content: space-between;
-  width: 30rem;
+  justify-content: space-around;
+  width: 29rem;
 }
 
 .evolutions-container li {
@@ -305,6 +322,18 @@ a {
 .evolution-img {
   width: 6rem;
   height: 6rem;
-  margin: 2rem 0 0rem 0.5rem;
+  margin: 2rem 0 0;
+}
+
+@media screen and (width <= 811px) {
+  main > div {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pokemon-img {
+    width: 50vw;
+    height: auto;
+  }
 }
 </style>

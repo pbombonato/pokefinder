@@ -9,7 +9,7 @@ import { RouterLink } from "vue-router";
     <RouterLink to="/">
       <img :src="HorizontalLogo" alt="Pokéfinder" />
     </RouterLink>
-    <SearchBar :pokemon-page="true" />
+    <SearchBar :header="true" />
   </header>
 </template>
 
@@ -17,15 +17,25 @@ import { RouterLink } from "vue-router";
 header {
   height: 10vh;
   width: 100%;
-  /* background-color: white; */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
+  padding: 1rem 0 0 1vw;
 }
 
 img {
-  width: auto;
-  height: 7vh;
+  width: 13vw;
+  height: auto;
+}
+
+@media screen and (width < 811px) {
+  img {
+    display: none;
+  }
+
+  header {
+    justify-content: center;
+    padding: 0;
+  }
 }
 </style>

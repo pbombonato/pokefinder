@@ -9,6 +9,8 @@ import SymbolLogo from "@/assets/images/symbol-logo.png";
 const input = ref("");
 const inputActive = ref(false);
 
+const props = defineProps<{ header?: Boolean }>();
+
 let pokemonList: string[] = [];
 
 const cache = new LRU<string, string[]>({
@@ -86,7 +88,7 @@ function filteredList() {
 </script>
 
 <template>
-  <div class="container" :class="{ active: inputActive }">
+  <div class="container" :class="{ active: inputActive, header: props.header }">
     <div class="input-container">
       <span
         class="symbol-logo"
@@ -123,6 +125,28 @@ function filteredList() {
   width: var(--searchbar-width);
   border-radius: var(--searchbar-border-radius);
   background-color: var(--searchbar-bg-color);
+}
+
+.container.header {
+  width: 82vw;
+  position: relative;
+  right: 1vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  z-index: 1000;
+}
+
+.container.header.active {
+  border-bottom-left-radius: 0;
+}
+
+.container.header > .result-container {
+  position: absolute;
+  top: calc(100%);
+  width: 100%;
+  background-color: white;
+  box-shadow: 0px 10px 6px #20212447;
 }
 
 .container:hover,
@@ -204,9 +228,13 @@ input {
   padding-top: 1.3rem;
 }
 
-@media screen and (width <= 768px) {
+@media screen and (width <= 811px) {
   .container {
     width: 85vw;
+  }
+
+  .container.header {
+    width: 90%;
   }
 }
 </style>
