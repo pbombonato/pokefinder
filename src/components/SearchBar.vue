@@ -95,7 +95,12 @@ function filteredList() {
 </script>
 
 <template>
-  <div class="container" :class="{ active: inputActive, header: props.header }">
+  <div
+    role="search"
+    class="container"
+    :class="{ active: inputActive, header: props.header }"
+  >
+  <label for="searchbar" class="hidden-visually">Barra de pesquisa: </label>
     <div class="input-container">
       <span
         class="symbol-logo"
@@ -103,12 +108,14 @@ function filteredList() {
       ></span>
       <input
         type="text"
+        name="searchbar"
         v-model="input"
         placeholder="Pesquisar Pokémon..."
         @input="inputActive = input ? true : false"
         @blur="!input ? (inputActive = false) : ''"
         @keyup="handleKeyUp"
         autofocus
+        aria-label="Caixa de pesquisa"
       />
     </div>
     <ul class="result-container">
@@ -129,6 +136,18 @@ function filteredList() {
 </template>
 
 <style scoped>
+.hidden-visually {
+  position: absolute;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+  height: 1px;
+  width: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+}
+
 .container {
   width: var(--searchbar-width);
   border-radius: var(--searchbar-border-radius);

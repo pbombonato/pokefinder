@@ -5,7 +5,7 @@ import { RouterLink } from "vue-router";
 </script>
 
 <template>
-  <header>
+  <header role="banner">
     <RouterLink to="/">
       <img :src="HorizontalLogo" alt="Pokéfinder" />
     </RouterLink>

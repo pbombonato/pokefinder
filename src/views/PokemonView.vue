@@ -172,7 +172,7 @@ onBeforeMount(async function () {
 
 <template>
   <PokemonHeader />
-  <main>
+  <main role="main">
     <div v-if="loading">Loading...</div>
     <div v-else>
       <img
@@ -180,9 +180,9 @@ onBeforeMount(async function () {
         :src="pokemonInfo.imgSrc"
         :alt="`${pokemonInfo.name.toUpperCase()}'s image`"
       />
-      <section class="info">
+      <section role="region" class="info" aria-labelledby="pokemon-name">
         <div class="name">
-          <h1>{{ pokemonInfo.name.toUpperCase() }}</h1>
+          <h1 id="pokemon-name">{{ pokemonInfo.name.toUpperCase() }}</h1>
         </div>
         <div class="types-container">
           <h2>Tipo(s):</h2>

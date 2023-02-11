@@ -4,7 +4,7 @@ import Logo from "../assets/images/vertical-logo.png";
 </script>
 
 <template>
-  <main>
+  <main role="main" aria-labelledby="main-title">
     <div>
       <img id="logo" :src="Logo" alt="PokéFinder logo" />
       <SearchBar />
