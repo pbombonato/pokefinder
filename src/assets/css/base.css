@@ -35,16 +35,6 @@
   --logo-size: 15rem;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
-
-    --color-text: var(--vt-c-text-dark-2);
-  }
-} */
-
 *,
 *::before,
 *::after {

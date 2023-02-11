@@ -26,6 +26,8 @@ I am a technician in Visual Communication (Graphic design), so I took on the cha
 - API Consumption
 - Accessibility features
 - Vercel
+- Prettier
+- ESLint
 - CSS3, HTML5, JS
 
 ## Future Improvements
@@ -70,6 +72,8 @@ Sou técnico em Comunicação Visual (design gráfico), então aceitei o desafio
 - Consumo de API
 - Recursos de acessibilidade
 - Vercel
+- Prettier
+- ESLint
 - CSS3, HTML5, JS
 
 ## Melhorias futuras
