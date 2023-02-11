@@ -46,12 +46,19 @@ onBeforeMount(() => {
   }
 });
 
+let interval: number | undefined;
+
 onMounted(() => {
-  document.addEventListener("input", handleInput);
+  interval = window.setInterval(() => {
+    if (input.value !== (this as any).$refs.searchInput.value) {
+      input.value = (this as any).$refs.searchInput.value;
+      handleInput();
+    }
+  }, 100);
 });
 
 onUnmounted(() => {
-  document.removeEventListener("input", handleInput);
+  window.clearInterval(interval!);
 });
 
 function handleInput() {
@@ -122,6 +129,7 @@ function filteredList() {
         type="text"
         name="searchbar"
         v-model="input"
+        ref="searchInput"
         placeholder="Pesquisar Pokémon..."
         @input="handleInput"
         @blur="!input ? (inputActive = false) : ''"
