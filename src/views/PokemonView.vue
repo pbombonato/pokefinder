@@ -6,7 +6,7 @@ import PokemonHeader from "../components/PokemonHeader.vue";
 
 let loading = ref(true);
 
-const props = defineProps<{ pokemonName?: string }>()
+const props = defineProps<{ pokemonName?: string }>();
 
 function capitalFirstLetter(string: string): string {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -71,15 +71,6 @@ const getEvolutionChain = async (url: string): Promise<string[]> => {
   retrieveNames(data.chain.evolves_to);
 
   return evolutionChain;
-};
-
-const getEvolutionImage = async (evolutionName: string): Promise<string[]> => {
-  const result = await axios.get(
-    `https://pokeapi.co/api/v2/pokemon/${evolutionName}`
-  );
-  const { front_default } = result.data.sprites.other.dream_world;
-
-  return front_default;
 };
 
 let pokemonInfo: {
@@ -292,27 +283,28 @@ main > div {
 
 .evolutions-container > ul {
   display: flex;
+  justify-content: space-between;
+  width: 30rem;
 }
 
 .evolutions-container li {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 10rem;
-  margin-right: 2rem;
+  justify-content: space-between;
   font-size: 0.8rem;
-  text-decoration: none;
 }
 
 a {
   text-decoration: none;
   color: #000;
   text-align: center;
+  font-weight: bold;
 }
 
 .evolution-img {
   width: 6rem;
   height: 6rem;
-  margin: 2rem;
+  margin: 2rem 0 0rem 0.5rem;
 }
 </style>

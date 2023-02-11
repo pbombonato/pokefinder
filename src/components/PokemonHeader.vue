@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import HorizontalLogo from "@/assets/images/horizontal-logo.png";
 import SearchBar from "./SearchBar.vue";
+import { RouterLink } from "vue-router";
 </script>
 
 <template>
   <header>
-    <img :src="HorizontalLogo" alt="" />
+    <RouterLink to="/">
+      <img :src="HorizontalLogo" alt="Pokéfinder" />
+    </RouterLink>
     <SearchBar :pokemon-page="true" />
   </header>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from "vue";
+import { RouterLink } from "vue-router";
 import axios from "axios";
 import LRU from "lru-cache";
 
@@ -41,6 +42,14 @@ onBeforeMount(() => {
       });
   }
 });
+
+function formatPokemonName(pokemon: string) {
+  const pokemonName = pokemon
+    .replace(/<\/?b>/g, "")
+    .replace(/ /g, "-")
+    .toLowerCase();
+  return `/${pokemonName}`;
+}
 
 function filteredList() {
   return pokemonList
@@ -97,8 +106,11 @@ function filteredList() {
         class="result"
         v-for="(pokemon, index) in filteredList()"
         :key="index"
-        v-html="pokemon"
-      ></li>
+      >
+        <routerLink :to="formatPokemonName(pokemon)">
+          <span v-html="pokemon"></span>
+        </routerLink>
+      </li>
       <li class="result error" v-if="!filteredList().length">
         Nenhum Pokémon encontrado.
       </li>
@@ -174,6 +186,12 @@ input {
   width: 100%;
   list-style: none;
   padding: 0.4rem 0 0.4rem 3.2rem;
+  cursor: default;
+}
+
+.result a {
+  text-decoration: none;
+  color: #000;
   cursor: default;
 }
 
