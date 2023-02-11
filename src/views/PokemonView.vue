@@ -211,7 +211,7 @@ onBeforeMount(async function () {
           </table>
         </div>
         <div class="evolutions-container">
-          <h2>Evoluções</h2>
+          <h2>Evoluções</h2><br />
           <ul>
             <li
               v-for="(evolution, index) in pokemonInfo.evolutions.names"
@@ -327,12 +327,70 @@ a {
 
 @media screen and (width <= 811px) {
   main > div {
+    margin: 5vh 0;
     flex-direction: column;
     align-items: center;
   }
 
   .pokemon-img {
-    width: 50vw;
+    width: 60vw;
+    height: auto;
+    margin-bottom: -6vh;
+  }
+
+  section {
+    width: 80vw;
+    margin: 5vh 0;
+    text-align: center;
+  }
+
+  section > div {
+    margin: 8vh 0;
+  }
+
+  .types-container h2 {
+    display: none;
+  }
+
+  .types-container {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin-top: -7vh;
+  }
+
+  .types-container li {
+    padding: 0 0.5rem;
+  }
+  table {
+    width: 80vw;
+  }
+  .stat-title {
+    padding-right:0;
+    text-align: left;
+  }
+
+  .evolutions-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .evolutions-container > ul {
+    margin-top: 2vh;
+    display: flex;
+    flex-direction: column;
+    width: 100%
+  }
+
+  .evolutions-container li {
+    margin: 3vh 0;
+  }
+
+  .evolution-img {
+    width: 70%;
     height: auto;
   }
 }
