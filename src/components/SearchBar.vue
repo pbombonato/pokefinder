@@ -132,7 +132,6 @@ function filteredList() {
   border-top-right-radius: var(--searchbar-border-radius);
   border-bottom: transparent;
 }
-
 .symbol-logo {
   margin: 0 0.5rem;
   width: 2.2rem;

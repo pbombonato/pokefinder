@@ -15,9 +15,10 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/rayquaza",
+      path: "/:pokemonName",
       name: "pokemon",
       component: PokemonView,
+      props: true,
     },
   ],
 });

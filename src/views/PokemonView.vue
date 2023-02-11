@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from "vue";
 import axios from "axios";
+import { RouterLink } from "vue-router";
 import PokemonHeader from "../components/PokemonHeader.vue";
 
 let loading = ref(true);
+
+const props = defineProps<{ pokemonName?: string }>()
 
 function capitalFirstLetter(string: string): string {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -70,9 +73,7 @@ const getEvolutionChain = async (url: string): Promise<string[]> => {
   return evolutionChain;
 };
 
-const getEvolutionImage = async (
-  evolutionName: string
-): Promise<string[]> => {
+const getEvolutionImage = async (evolutionName: string): Promise<string[]> => {
   const result = await axios.get(
     `https://pokeapi.co/api/v2/pokemon/${evolutionName}`
   );
@@ -81,7 +82,6 @@ const getEvolutionImage = async (
   return front_default;
 };
 
-// let pokemonInfo = {};
 let pokemonInfo: {
   name: string;
   id: number;
@@ -91,11 +91,9 @@ let pokemonInfo: {
   evolutions: { url: string; names: string[]; images: string[] };
 };
 
-const url: string = "/pikachu";
-
 onBeforeMount(async function () {
   await axios
-    .get(`https://pokeapi.co/api/v2/pokemon${url}`)
+    .get(`https://pokeapi.co/api/v2/pokemon/${props.pokemonName}`)
     .then((response) => response.data)
     .then((pokemonInfo) => {
       return {
@@ -119,7 +117,7 @@ onBeforeMount(async function () {
         types: pokemonInfo.types.map((type: { type: { name: string } }) =>
           translatePokemonType(type.type.name)
         ),
-        evolutions: { url: "unknown", names: ["unknown"], images: ["unknown"] },
+        evolutions: { url: "unknown", names: ["unknown"], images: [] },
       };
     })
     .then(async (pokemonInfo) => {
@@ -146,22 +144,38 @@ onBeforeMount(async function () {
       loading.value = false;
     });
 
-  await getEvolutionChain("https://pokeapi.co/api/v2/evolution-chain/2/")
-    .then((evolutionChain) => {
-      pokemonInfo.evolutions.names = evolutionChain;
-      return evolutionChain;
+  await axios
+    .get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonInfo.id}/`)
+    .then((response) => response.data.evolution_chain.url)
+    .then((url) => {
+      pokemonInfo.evolutions.url = url;
     })
-    .then((evolutionChain) => {
-      pokemonInfo.evolutions.images = evolutionChain.map((evolutionName) =>
-        getEvolutionImage(evolutionName)
-      );
-      console.log(pokemonInfo)
-      loading.value = false;
-    })
-    .catch((error) => {
-      console.error(error);
+    .catch((err) => {
+      console.log(err);
       loading.value = false;
     });
+
+  await getEvolutionChain(pokemonInfo.evolutions.url)
+    .then((evolutionChain) => {
+      pokemonInfo.evolutions.names = evolutionChain;
+    })
+    .catch((err) => {
+      console.log(err);
+      loading.value = false;
+    });
+
+  await Promise.all(
+    pokemonInfo.evolutions.names.map(async (evolution) => {
+      const response = await axios.get(
+        `https://pokeapi.co/api/v2/pokemon/${evolution}`
+      );
+      const image = response.data.sprites.other.dream_world.front_default;
+      pokemonInfo.evolutions.images.push(image);
+      console.log(pokemonInfo.evolutions.images);
+    })
+  );
+
+  loading.value = false;
 });
 </script>
 
@@ -214,12 +228,14 @@ onBeforeMount(async function () {
               v-for="(evolution, index) in pokemonInfo.evolutions.names"
               :key="index"
             >
-              <img
-                :src="pokemonInfo.evolutions.images[index]"
-                :alt="evolution"
-                class="evolution-img"
-              />
-              {{ capitalFirstLetter(evolution) }}
+              <RouterLink :to="'/' + evolution">
+                <img
+                  :src="pokemonInfo.evolutions.images[index]"
+                  :alt="evolution"
+                  class="evolution-img"
+                />
+                {{ capitalFirstLetter(evolution) }}
+              </RouterLink>
             </li>
           </ul>
         </div>
@@ -282,14 +298,21 @@ main > div {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 6rem;
+  width: 10rem;
   margin-right: 2rem;
   font-size: 0.8rem;
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+  text-align: center;
 }
 
 .evolution-img {
   width: 6rem;
   height: 6rem;
-  margin: 1rem;
+  margin: 2rem;
 }
 </style>
