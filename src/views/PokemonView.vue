@@ -1,55 +1,248 @@
 <script setup lang="ts">
+import { ref, onBeforeMount } from "vue";
+import axios from "axios";
 import PokemonHeader from "../components/PokemonHeader.vue";
 
-const pokemonInfo = {
-  name: "rayquaza",
-  stats: [
-    { base_stat: 105, name: "hp" },
-    { base_stat: 105, name: "attack" },
-    { base_stat: 105, name: "defense" },
-    { base_stat: 105, name: "special-attack" },
-    { base_stat: 105, name: "special-defense" },
-    { base_stat: 105, name: "speed" },
-  ],
-  types: ["dragon", "flying"],
-  imgSrc:
-    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/384.svg",
-  evolutions: ["charizard", "rayquaza", "charmander"],
+let loading = ref(true);
+
+function capitalFirstLetter(string: string): string {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function translatePokemonType(pokemonType: string): string {
+  switch (pokemonType) {
+    case "normal":
+      return "Normal";
+    case "fire":
+      return "Fogo";
+    case "water":
+      return "Água";
+    case "grass":
+      return "Planta";
+    case "flying":
+      return "Voador";
+    case "fighting":
+      return "Lutador";
+    case "poison":
+      return "Venenoso";
+    case "electric":
+      return "Elétrico";
+    case "ground":
+      return "Terrestre";
+    case "rock":
+      return "Pedra";
+    case "psychic":
+      return "Psíquico";
+    case "ice":
+      return "Gelo";
+    case "bug":
+      return "Inseto";
+    case "ghost":
+      return "Fantasma";
+    case "steel":
+      return "Aço";
+    case "dragon":
+      return "Dragão";
+    case "dark":
+      return "Sombrio";
+    case "fairy":
+      return "Fada";
+    default:
+      return "Tipo desconhecido.";
+  }
+}
+
+const getEvolutionChain = async (url: string): Promise<string[]> => {
+  const result = await axios.get(url);
+  const { data } = result;
+
+  const evolutionChain: Array<string> = [data.chain.species.name];
+  const retrieveNames = (evolvesToArray: Array<any>) => {
+    evolvesToArray.forEach(async (item) => {
+      evolutionChain.push(item.species.name);
+      if (item.evolves_to.length > 0) {
+        retrieveNames(item.evolves_to);
+      }
+    });
+  };
+  retrieveNames(data.chain.evolves_to);
+
+  return evolutionChain;
 };
+
+const getEvolutionImage = async (
+  evolutionName: string
+): Promise<string[]> => {
+  const result = await axios.get(
+    `https://pokeapi.co/api/v2/pokemon/${evolutionName}`
+  );
+  const { front_default } = result.data.sprites.other.dream_world;
+
+  return front_default;
+};
+
+// let pokemonInfo = {};
+let pokemonInfo: {
+  name: string;
+  id: number;
+  imgSrc: string;
+  stats: { base_stat: number; name: string }[];
+  types: string[];
+  evolutions: { url: string; names: string[]; images: string[] };
+};
+
+const url: string = "/pikachu";
+
+onBeforeMount(async function () {
+  await axios
+    .get(`https://pokeapi.co/api/v2/pokemon${url}`)
+    .then((response) => response.data)
+    .then((pokemonInfo) => {
+      return {
+        name: pokemonInfo.name,
+        id: pokemonInfo.id,
+        imgSrc: pokemonInfo.sprites.other.dream_world.front_default,
+        stats: [
+          { base_stat: pokemonInfo.stats[0].base_stat, name: "HP" },
+          { base_stat: pokemonInfo.stats[1].base_stat, name: "Ataque" },
+          { base_stat: pokemonInfo.stats[2].base_stat, name: "Defesa" },
+          {
+            base_stat: pokemonInfo.stats[3].base_stat,
+            name: "Ataque especial",
+          },
+          {
+            base_stat: pokemonInfo.stats[4].base_stat,
+            name: "Defesa especial",
+          },
+          { base_stat: pokemonInfo.stats[5].base_stat, name: "Velocidade" },
+        ],
+        types: pokemonInfo.types.map((type: { type: { name: string } }) =>
+          translatePokemonType(type.type.name)
+        ),
+        evolutions: { url: "unknown", names: ["unknown"], images: ["unknown"] },
+      };
+    })
+    .then(async (pokemonInfo) => {
+      await axios
+        .get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonInfo.id}`)
+        .then((response) => response.data.evolution_chain.url)
+        .then((url) => {
+          pokemonInfo.evolutions.url = url;
+        });
+      return pokemonInfo;
+    })
+    .then(function (pokemonInformation: {
+      name: string;
+      id: number;
+      imgSrc: string;
+      stats: { base_stat: number; name: string }[];
+      types: string[];
+      evolutions: { url: string; names: string[]; images: string[] };
+    }): void {
+      pokemonInfo = pokemonInformation;
+    })
+    .catch((error: string) => {
+      console.log(error);
+      loading.value = false;
+    });
+
+  await getEvolutionChain("https://pokeapi.co/api/v2/evolution-chain/2/")
+    .then((evolutionChain) => {
+      pokemonInfo.evolutions.names = evolutionChain;
+      return evolutionChain;
+    })
+    .then((evolutionChain) => {
+      pokemonInfo.evolutions.images = evolutionChain.map((evolutionName) =>
+        getEvolutionImage(evolutionName)
+      );
+      console.log(pokemonInfo)
+      loading.value = false;
+    })
+    .catch((error) => {
+      console.error(error);
+      loading.value = false;
+    });
+});
 </script>
 
 <template>
   <PokemonHeader />
   <main>
-    <div>
+    <div v-if="loading">Loading...</div>
+    <div v-else>
       <img
         class="pokemon-img"
         :src="pokemonInfo.imgSrc"
-        :alt="`${pokemonInfo.name}'s image`"
+        :alt="`${pokemonInfo.name.toUpperCase()}'s image`"
       />
       <section class="info">
         <div class="name">
-          <h2>{{ pokemonInfo.name }}</h2>
+          <h1>{{ pokemonInfo.name.toUpperCase() }}</h1>
         </div>
-        <ul class="types-container">
-          <li
-            class="type"
-            v-for="(type, index) in pokemonInfo.types"
-            :key="index"
-          >
-            {{ type }}
-          </li>
-        </ul>
-        <div class="stats"></div>
+        <div class="types-container">
+          <h2>Tipo(s):</h2>
+          <ul>
+            <li
+              class="type"
+              v-for="(type, index) in pokemonInfo.types"
+              :key="index"
+            >
+              {{ type }}
+            </li>
+          </ul>
+          <hr />
+        </div>
+
+        <div class="stats-container">
+          <h2>Estatísticas</h2>
+          <hr />
+          <table>
+            <tr v-for="(stat, index) in pokemonInfo.stats" :key="index">
+              <td class="stat-title">
+                <b>{{ stat.name }}</b>
+              </td>
+              <td class="stat-value">{{ stat.base_stat }}</td>
+            </tr>
+          </table>
+          <hr />
+        </div>
+
+        <div class="evolutions-container">
+          <h2>Evoluções</h2>
+          <ul>
+            <li
+              v-for="(evolution, index) in pokemonInfo.evolutions.names"
+              :key="index"
+            >
+              <img
+                :src="pokemonInfo.evolutions.images[index]"
+                :alt="evolution"
+                class="evolution-img"
+              />
+              {{ capitalFirstLetter(evolution) }}
+            </li>
+          </ul>
+        </div>
       </section>
     </div>
   </main>
 </template>
 
 <style scoped>
+li {
+  list-style: none;
+}
+
+ul {
+  padding-left: 0;
+}
+
+div {
+  margin-top: 1rem;
+}
+
 main {
-  width: 100vw;
-  height: 90vh;
+  width: 100%;
 }
 
 main > div {
@@ -58,10 +251,45 @@ main > div {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+.pokemon-img {
+  align-self: center;
+  width: 25rem;
+  height: 25rem;
+  margin-right: 10vw;
+}
+
+.types-container,
+.types-container ul {
+  display: flex;
   align-items: center;
 }
-.pokemon-img {
-  width: 15rem;
-  height: 15rem;
+
+.types-container li {
+  padding-left: 1.5rem;
+}
+
+.stats-container td {
+  padding-right: 5.5rem;
+}
+
+.evolutions-container > ul {
+  display: flex;
+}
+
+.evolutions-container li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 6rem;
+  margin-right: 2rem;
+  font-size: 0.8rem;
+}
+
+.evolution-img {
+  width: 6rem;
+  height: 6rem;
+  margin: 1rem;
 }
 </style>

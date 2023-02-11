@@ -13,8 +13,8 @@ import SearchBar from "./SearchBar.vue";
 <style scoped>
 header {
   height: 10vh;
-  width: 100vw;
-  background-color: white;
+  width: 100%;
+  /* background-color: white; */
   display: flex;
   align-items: center;
   justify-content: space-between;
