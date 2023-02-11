@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, onMounted, onUnmounted } from "vue";
 import { RouterLink } from "vue-router";
 import router from "@/router";
 import axios from "axios";
@@ -45,6 +45,18 @@ onBeforeMount(() => {
       });
   }
 });
+
+onMounted(() => {
+  document.addEventListener("input", handleInput);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("input", handleInput);
+});
+
+function handleInput() {
+  inputActive.value = input.value ? true : false;
+}
 
 function handleKeyUp(event: KeyboardEvent) {
   if (event.key === "Enter" && filteredList().length) {
@@ -111,7 +123,7 @@ function filteredList() {
         name="searchbar"
         v-model="input"
         placeholder="Pesquisar Pokémon..."
-        @input="inputActive = input ? true : false"
+        @input="handleInput"
         @blur="!input ? (inputActive = false) : ''"
         @keyup="handleKeyUp"
         autofocus
@@ -124,9 +136,9 @@ function filteredList() {
         v-for="(pokemon, index) in filteredList()"
         :key="index"
       >
-        <routerLink :to="formatPokemonName(pokemon)">
+        <RouterLink :to="formatPokemonName(pokemon)">
           <span v-html="pokemon"></span>
-        </routerLink>
+        </RouterLink>
       </li>
       <li class="result error" v-if="!filteredList().length">
         Nenhum Pokémon encontrado.
