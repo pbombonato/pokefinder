@@ -6,7 +6,7 @@ import PokemonHeader from "../components/PokemonHeader.vue";
 
 let loading = ref(true);
 
-const props = defineProps<{ pokemonName?: string }>();
+const props = defineProps<{ pokemonName: string }>();
 
 function capitalFirstLetter(string: string): string {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -59,8 +59,16 @@ const getEvolutionChain = async (url: string): Promise<string[]> => {
   const result = await axios.get(url);
   const { data } = result;
 
-  const evolutionChain: Array<string> = [data.chain.species.name];
-  const retrieveNames = (evolvesToArray: Array<any>) => {
+  const evolutionChain: string[] = [data.chain.species.name];
+
+  type Evolution = {
+    evolution_details: any[];
+    evolves_to: Evolution[] | never[];
+    is_baby: boolean;
+    species: { name: string; url: string };
+  };
+
+  const retrieveNames = (evolvesToArray: Evolution[] | never[]): void => {
     evolvesToArray.forEach(async (item) => {
       evolutionChain.push(item.species.name);
       if (item.evolves_to.length > 0) {
@@ -73,20 +81,29 @@ const getEvolutionChain = async (url: string): Promise<string[]> => {
   return evolutionChain;
 };
 
-let pokemonInfo: {
-  name: string;
-  id: number;
-  imgSrc: string;
-  stats: { base_stat: number; name: string }[];
-  types: string[];
-  evolutions: { url: string; names: string[]; images: string[] };
+type PokemonInfo = {
+  readonly name: string;
+  readonly id: number;
+  readonly imgSrc: string;
+  readonly stats: { base_stat: number; name: string }[];
+  readonly types: string[];
+  readonly evolutions: {
+    url?: string;
+    readonly names: string[];
+    readonly images: string[];
+  };
 };
 
+let pokemonInfo: PokemonInfo;
+
 onBeforeMount(async function () {
+  type PokemonType = { type: { name: string } };
+
+  // define basic pokemon info
   await axios
     .get(`https://pokeapi.co/api/v2/pokemon/${props.pokemonName}`)
     .then((response) => response.data)
-    .then((pokemonInfo) => {
+    .then((pokemonInfo): PokemonInfo => {
       return {
         name: pokemonInfo.name,
         id: pokemonInfo.id,
@@ -105,65 +122,58 @@ onBeforeMount(async function () {
           },
           { base_stat: pokemonInfo.stats[5].base_stat, name: "Velocidade" },
         ],
-        types: pokemonInfo.types.map((type: { type: { name: string } }) =>
+        types: pokemonInfo.types.map((type: PokemonType): string =>
           translatePokemonType(type.type.name)
         ),
-        evolutions: { url: "unknown", names: ["unknown"], images: [] },
+        evolutions: { names: [], images: [] },
       };
     })
-    .then(async (pokemonInfo) => {
+    .then(async (pokemonInfo): Promise<PokemonInfo> => {
       await axios
         .get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonInfo.id}`)
         .then((response) => response.data.evolution_chain.url)
         .then((url) => {
           pokemonInfo.evolutions.url = url;
+        })
+        .catch((error: string): void => {
+          console.log(error);
+          loading.value = false;
         });
       return pokemonInfo;
     })
-    .then(function (pokemonInformation: {
-      name: string;
-      id: number;
-      imgSrc: string;
-      stats: { base_stat: number; name: string }[];
-      types: string[];
-      evolutions: { url: string; names: string[]; images: string[] };
-    }): void {
+    .then(function (pokemonInformation: PokemonInfo): void {
       pokemonInfo = pokemonInformation;
     })
-    .catch((error: string) => {
+    .catch((error: string): void => {
       console.log(error);
       loading.value = false;
     });
 
-  await axios
-    .get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonInfo.id}/`)
-    .then((response) => response.data.evolution_chain.url)
-    .then((url) => {
-      pokemonInfo.evolutions.url = url;
-    })
-    .catch((err) => {
-      console.log(err);
-      loading.value = false;
-    });
+  // Get evolution names
+  if (pokemonInfo.evolutions.url) {
+    await getEvolutionChain(pokemonInfo.evolutions.url)
+      .then((evolutionChain) => {
+        pokemonInfo.evolutions.names.push(...evolutionChain);
+      })
+      .catch((err) => {
+        console.log(err);
+        loading.value = false;
+      });
+  }
 
-  await getEvolutionChain(pokemonInfo.evolutions.url)
-    .then((evolutionChain) => {
-      pokemonInfo.evolutions.names = evolutionChain;
-    })
-    .catch((err) => {
-      console.log(err);
-      loading.value = false;
-    });
-
+  // get evolution images
   await Promise.all(
-    pokemonInfo.evolutions.names.map(async (evolution) => {
-      const response = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${evolution}`
-      );
-      const image = response.data.sprites.other.dream_world.front_default;
-      pokemonInfo.evolutions.images.push(image);
-      console.log(pokemonInfo.evolutions.images);
-    })
+    pokemonInfo.evolutions.names.map(
+      async (evolution: string, index: number): Promise<void> => {
+        const response = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/${evolution}`
+        );
+        const image = response.data.sprites.front_default;
+
+        pokemonInfo.evolutions.images[index] = image;
+        console.log(pokemonInfo.evolutions.images);
+      }
+    )
   );
 
   loading.value = false;
