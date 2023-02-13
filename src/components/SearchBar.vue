@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, onMounted, onUnmounted } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { RouterLink } from "vue-router";
 import router from "@/router";
 import axios from "axios";
@@ -27,51 +27,35 @@ onBeforeMount(() => {
       pokemonList = cachedList;
     }
   }
+
+  type Pokemon = { name: string; url: string };
+
   if (pokemonList.length === 0) {
     axios
       .get("https://pokeapi.co/api/v2/pokemon/?limit=1279")
-      .then((response) => response.data.results)
+      .then((response): Pokemon[] => response.data.results)
       .then((pokemons) =>
-        pokemons.map((pokemon: { name: string }) =>
-          pokemon.name.replace(/-/g, " ")
-        )
+        pokemons.map((pokemon) => pokemon.name.replace(/-/g, " "))
       )
-      .then((pokemons) => {
-        pokemonList = [...pokemons];
+      .then((pokemonNames) => {
+        pokemonList = [...pokemonNames];
         cache.set("pokemonList", pokemonList);
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch(console.log);
   }
 });
 
-let interval: number | undefined;
-
-onMounted(() => {
-  interval = window.setInterval(() => {
-    if (input.value !== (this as any).$refs.searchInput.value) {
-      input.value = (this as any).$refs.searchInput.value;
-      handleInput();
-    }
-  }, 100);
-});
-
-onUnmounted(() => {
-  window.clearInterval(interval!);
-});
-
-function handleInput() {
+function handleInput(): void {
   inputActive.value = input.value ? true : false;
 }
 
-function handleKeyUp(event: KeyboardEvent) {
+function handleKeyUp(event: KeyboardEvent): void {
   if (event.key === "Enter" && filteredList().length) {
     router.push({ path: `${formatPokemonName(filteredList()[0])}` });
   }
 }
 
-function formatPokemonName(pokemon: string) {
+function formatPokemonName(pokemon: string): string {
   const pokemonName = pokemon
     .replace(/<\/?b>/g, "")
     .replace(/ /g, "-")
