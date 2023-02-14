@@ -12,7 +12,7 @@ footer {
   margin-top: auto;
   display: flex;
   justify-content: center;
-  padding-bottom: 1rem;
+  padding-bottom: 0.7rem;
 }
 
 a {

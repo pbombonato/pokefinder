@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from "vue";
 import axios from "axios";
-import { RouterLink } from "vue-router";
-import PokemonHeader from "../components/PokemonHeader.vue";
 
-let loading = ref(true);
+import PokemonHeader from "../components/PokemonHeader.vue";
+import PokemonImage from "@/components/PokemonImage.vue";
+import EvolutionsSectionVue from "@/components/EvolutionsSection.vue";
+import StatsSection from "@/components/StatsSection.vue";
+import TypesSection from "@/components/TypesSection.vue";
+
+const loading = ref(true);
 
 const props = defineProps<{ pokemonName: string }>();
-
-function capitalFirstLetter(string: string): string {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
 function translatePokemonType(pokemonType: string): string {
   switch (pokemonType) {
@@ -55,31 +55,9 @@ function translatePokemonType(pokemonType: string): string {
   }
 }
 
-const getEvolutionChain = async (url: string): Promise<string[]> => {
-  const result = await axios.get(url);
-  const { data } = result;
-
-  const evolutionChain: string[] = [data.chain.species.name];
-
-  type Evolution = {
-    evolution_details: any[];
-    evolves_to: Evolution[] | never[];
-    is_baby: boolean;
-    species: { name: string; url: string };
-  };
-
-  const retrieveNames = (evolvesToArray: Evolution[] | never[]): void => {
-    evolvesToArray.forEach(async (item) => {
-      evolutionChain.push(item.species.name);
-      if (item.evolves_to.length > 0) {
-        retrieveNames(item.evolves_to);
-      }
-    });
-  };
-  retrieveNames(data.chain.evolves_to);
-
-  return evolutionChain;
-};
+function formatPokemonName(pokemonName: string): string {
+  return pokemonName.replace(/-/g, " ").toUpperCase();
+}
 
 type PokemonInfo = {
   readonly name: string;
@@ -87,14 +65,30 @@ type PokemonInfo = {
   readonly imgSrc: string;
   readonly stats: { base_stat: number; name: string }[];
   readonly types: string[];
-  readonly evolutions: {
+  evolutions?: {
     url?: string;
-    readonly names: string[];
-    readonly images: string[];
   };
 };
 
 let pokemonInfo: PokemonInfo;
+
+function getPokemonImage(pokemonInformation: {
+  id: number;
+  sprites: {
+    front_default: string;
+    other: { dream_world: { front_default: string | null } };
+  };
+}): string {
+  const dreamWorldImage =
+    pokemonInformation.sprites.other.dream_world.front_default;
+  const defaultImage = pokemonInformation.sprites.front_default;
+
+  if (dreamWorldImage !== null) {
+    return dreamWorldImage;
+  } else {
+    return defaultImage;
+  }
+}
 
 onBeforeMount(async function () {
   type PokemonType = { type: { name: string } };
@@ -107,7 +101,7 @@ onBeforeMount(async function () {
       return {
         name: pokemonInfo.name,
         id: pokemonInfo.id,
-        imgSrc: pokemonInfo.sprites.other.dream_world.front_default,
+        imgSrc: getPokemonImage(pokemonInfo),
         stats: [
           { base_stat: pokemonInfo.stats[0].base_stat, name: "HP" },
           { base_stat: pokemonInfo.stats[1].base_stat, name: "Ataque" },
@@ -125,21 +119,7 @@ onBeforeMount(async function () {
         types: pokemonInfo.types.map((type: PokemonType): string =>
           translatePokemonType(type.type.name)
         ),
-        evolutions: { names: [], images: [] },
       };
-    })
-    .then(async (pokemonInfo): Promise<PokemonInfo> => {
-      await axios
-        .get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonInfo.id}`)
-        .then((response) => response.data.evolution_chain.url)
-        .then((url) => {
-          pokemonInfo.evolutions.url = url;
-        })
-        .catch((error: string): void => {
-          console.log(error);
-          loading.value = false;
-        });
-      return pokemonInfo;
     })
     .then(function (pokemonInformation: PokemonInfo): void {
       pokemonInfo = pokemonInformation;
@@ -149,260 +129,68 @@ onBeforeMount(async function () {
       loading.value = false;
     });
 
-  // Get evolution names
-  if (pokemonInfo.evolutions.url) {
-    await getEvolutionChain(pokemonInfo.evolutions.url)
-      .then((evolutionChain) => {
-        pokemonInfo.evolutions.names.push(...evolutionChain);
-      })
-      .catch((err) => {
-        console.log(err);
-        loading.value = false;
-      });
-  }
-
-  // get evolution images
-  await Promise.all(
-    pokemonInfo.evolutions.names.map(
-      async (evolution: string, index: number): Promise<void> => {
-        const response = await axios.get(
-          `https://pokeapi.co/api/v2/pokemon/${evolution}`
-        );
-        const image = response.data.sprites.front_default;
-
-        pokemonInfo.evolutions.images[index] = image;
-        console.log(pokemonInfo.evolutions.images);
-      }
-    )
-  );
-
   loading.value = false;
 });
 </script>
 
 <template>
   <PokemonHeader />
-  <main role="main">
-    <div v-if="loading">Loading...</div>
-    <div v-else>
-      <img
-        class="pokemon-img"
-        :src="pokemonInfo.imgSrc"
-        :alt="`${pokemonInfo.name.toUpperCase()}'s image`"
-      />
-      <section role="region" class="info" aria-labelledby="pokemon-name">
-        <div class="name">
-          <h1 id="pokemon-name">{{ pokemonInfo.name.toUpperCase() }}</h1>
-        </div>
-        <div class="types-container">
-          <h2>Tipo(s):</h2>
-          <ul>
-            <li
-              class="type"
-              v-for="(type, index) in pokemonInfo.types"
-              :key="index"
-            >
-              {{ type }}
-            </li>
-          </ul>
-        </div>
+  <div v-if="loading">Loading...</div>
+  <main v-else role="main">
+    <PokemonImage
+      :pokemon-img-src="pokemonInfo.imgSrc"
+      :pokemon-name="formatPokemonName(pokemonInfo.name)"
+    />
+    <section role="region" class="info" aria-labelledby="pokemon-name">
+      <h1 id="pokemon-name">{{ formatPokemonName(pokemonInfo.name) }}</h1>
+      <TypesSection :pokemon-types="pokemonInfo.types" />
 
-        <div class="stats-container">
-          <h2>Estatísticas</h2>
+      <StatsSection :pokemon-stats="pokemonInfo.stats" />
 
-          <table>
-            <tr v-for="(stat, index) in pokemonInfo.stats" :key="index">
-              <td class="stat-title">
-                <b>{{ stat.name }}</b>
-              </td>
-              <td class="stat-value">{{ stat.base_stat }}</td>
-            </tr>
-          </table>
-        </div>
-        <div class="evolutions-container">
-          <h2>Evoluções</h2>
-          <br />
-          <ul>
-            <li
-              v-for="(evolution, index) in pokemonInfo.evolutions.names"
-              :key="index"
-            >
-              <RouterLink :to="'/' + evolution">
-                <img
-                  :src="pokemonInfo.evolutions.images[index]"
-                  :alt="evolution"
-                  class="evolution-img"
-                />
-                <br />
-                {{ capitalFirstLetter(evolution) }}
-              </RouterLink>
-            </li>
-          </ul>
-        </div>
-      </section>
-    </div>
+      <EvolutionsSectionVue :pokemon-id="pokemonInfo.id" />
+    </section>
   </main>
 </template>
 
 <style scoped>
 h1 {
   font-size: 2rem;
-}
-
-h2 {
-  font-size: 1.3rem;
-}
-
-li {
-  list-style: none;
-}
-
-ul {
-  padding-left: 0;
-}
-
-div {
-  margin-top: 1rem;
+  line-height: 1;
 }
 
 main {
   min-height: 83vh;
   min-width: 95vw;
+  width: 95vw;
+  display: grid;
+  margin: 0 auto;
+  grid-template-areas: "img content";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  padding: 3vh 0;
 }
 
-main > div {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.pokemon-img {
-  align-self: center;
-  width: 25rem;
-  height: 25rem;
-  margin-right: 10vw;
-}
-
-.types-container,
-.types-container ul {
-  display: flex;
-  align-items: center;
-}
-
-.types-container li {
-  padding-left: 1.5rem;
-}
-
-.stat-title {
-  padding-right: 18rem;
-}
-
-table {
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
-}
-
-table .stat-value {
-  text-align: end;
-  padding-right: 0;
-}
-
-.evolutions-container > ul {
-  display: flex;
-  justify-content: space-around;
-  width: 29rem;
-}
-
-.evolutions-container li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.8rem;
-}
-
-a {
-  text-decoration: none;
-  color: #000;
-  text-align: center;
-  font-weight: bold;
-}
-
-.evolution-img {
-  width: 6rem;
-  height: 6rem;
-  margin: 2rem 0 0;
+section {
+  grid-area: "content";
+  justify-self: center;
+  width: 80%;
 }
 
 @media screen and (width <= 811px) {
-  main > div {
-    margin: 5vh 0;
+  main {
+    width: 100vw;
+    display: flex;
+    margin: 3vh 0 0;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-  }
-
-  .pokemon-img {
-    width: 60vw;
-    height: auto;
-    margin-bottom: -6vh;
+    padding: 0;
   }
 
   section {
     width: 80vw;
     margin: 5vh 0;
     text-align: center;
-  }
-
-  section > div {
-    margin: 8vh 0;
-  }
-
-  .types-container h2 {
-    display: none;
-  }
-
-  .types-container {
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    margin-top: -7vh;
-  }
-
-  .types-container li {
-    padding: 0 0.5rem;
-  }
-  table {
-    width: 80vw;
-  }
-  .stat-title {
-    padding-right: 0;
-    text-align: left;
-  }
-
-  .evolutions-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
-
-  .evolutions-container > ul {
-    margin-top: 2vh;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .evolutions-container li {
-    margin: 3vh 0;
-  }
-
-  .evolution-img {
-    width: 70%;
-    height: auto;
   }
 }
 </style>

@@ -4,6 +4,16 @@ import PokemonFooter from "./components/PokemonFooter.vue";
 </script>
 
 <template>
-  <RouterView :key="$route.path" />
-  <PokemonFooter />
+  <div class="page">
+    <RouterView :key="$route.path" />
+    <PokemonFooter />
+  </div>
 </template>
+
+<style scoped>
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+</style>

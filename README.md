@@ -35,6 +35,7 @@ I am a technician in Visual Communication (Graphic design), so I took on the cha
 
 ## Future Improvements
 
+- Review and fix of Typescript code after Typescript course (Done)
 - Implementation of Pinia, Vitest and Cypress
 - Separation of components into smaller, more organized pieces
 - Inclusion of icons for design purposes
@@ -84,6 +85,7 @@ Sou técnico em Comunicação Visual (design gráfico), então aceitei o desafio
 
 ## Melhorias futuras
 
+- (Feito) Revisão de código Typescript após aprender mais em um curso de Typescript 
 - Implementação de Pinia, Vitest e Cypress
     - Pesquisei e aprendi sobre eles, porém não consegui implementá-los a tempo
 - Separação de componentes em peças menores e mais organizadas
