@@ -35,12 +35,11 @@ I am a technician in Visual Communication (Graphic design), so I took on the cha
 
 ## Future Improvements
 
-- Review and fix of Typescript code after Typescript course (Done)
-- Implementation of Pinia, Vitest and Cypress
-- Separation of components into smaller, more organized pieces
-- Inclusion of icons for design purposes
-- Code review and bug fixing
-- Addition of new functionalities and information
+:white_check_mark: Review and fix of Typescript code after Typescript course (Done)
+:black_square_button: Implementation of Pinia, Vitest and Cypress
+:white_check_mark: Separation of components into smaller, more organized pieces
+:black_square_button: Inclusion of icons for design purposes
+:black_square_button: Addition of new functionalities and information
 
 ## Conclusion
 
@@ -85,13 +84,12 @@ Sou técnico em Comunicação Visual (design gráfico), então aceitei o desafio
 
 ## Melhorias futuras
 
-- (Feito) Revisão de código Typescript após aprender mais em um curso de Typescript 
-- Implementação de Pinia, Vitest e Cypress
+:white_check_mark: (Feito) Revisão de código Typescript após aprender mais em um curso de Typescript 
+:black_square_button: Implementação de Pinia, Vitest e Cypress
     - Pesquisei e aprendi sobre eles, porém não consegui implementá-los a tempo
-- Separação de componentes em peças menores e mais organizadas
-- Inclusão de ícones para fins de design
-- Revisão de código e correção de bugs
-- Adição de novas funcionalidades e informações
+:white_check_mark: Separação de componentes em peças menores e mais organizadas
+:black_square_button: Inclusão de ícones para fins de design
+:black_square_button: Adição de novas funcionalidades e informações
 
 ## Conclusão
 
