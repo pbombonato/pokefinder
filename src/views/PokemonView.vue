@@ -51,6 +51,10 @@ function translatePokemonType(pokemonType: string): string {
   }
 }
 
+function formatPokemonName(pokemonName: string): string {
+  return pokemonName.replace(/-/g, " ").toUpperCase();
+}
+
 type PokemonInfo = {
   readonly name: string;
   readonly id: number;
@@ -64,6 +68,24 @@ type PokemonInfo = {
 
 let pokemonInfo: PokemonInfo;
 
+function getPokemonImage(pokemonInformation: {
+  id: number;
+  sprites: {
+    front_default: string;
+    other: { dream_world: { front_default: string | null } };
+  };
+}): string {
+  const dreamWorldImage =
+    pokemonInformation.sprites.other.dream_world.front_default;
+  const defaultImage = pokemonInformation.sprites.front_default;
+
+  if (dreamWorldImage !== null) {
+    return dreamWorldImage;
+  } else {
+    return defaultImage;
+  }
+}
+
 onBeforeMount(async function () {
   type PokemonType = { type: { name: string } };
 
@@ -72,10 +94,12 @@ onBeforeMount(async function () {
     .get(`https://pokeapi.co/api/v2/pokemon/${props.pokemonName}`)
     .then((response) => response.data)
     .then((pokemonInfo): PokemonInfo => {
+      console.log(pokemonInfo);
+
       return {
         name: pokemonInfo.name,
         id: pokemonInfo.id,
-        imgSrc: pokemonInfo.sprites.other.dream_world.front_default,
+        imgSrc: getPokemonImage(pokemonInfo),
         stats: [
           { base_stat: pokemonInfo.stats[0].base_stat, name: "HP" },
           { base_stat: pokemonInfo.stats[1].base_stat, name: "Ataque" },
@@ -115,11 +139,11 @@ onBeforeMount(async function () {
       <img
         class="pokemon-img"
         :src="pokemonInfo.imgSrc"
-        :alt="`${pokemonInfo.name.toUpperCase()}'s image`"
+        :alt="`${formatPokemonName(pokemonInfo.name)}'s image`"
       />
       <section role="region" class="info" aria-labelledby="pokemon-name">
         <div class="name">
-          <h1 id="pokemon-name">{{ pokemonInfo.name.toUpperCase() }}</h1>
+          <h1 id="pokemon-name">{{ formatPokemonName(pokemonInfo.name) }}</h1>
         </div>
         <div class="types-container">
           <h2>Tipo(s):</h2>

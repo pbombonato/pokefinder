@@ -48,10 +48,23 @@ const getEvolutionChain = async (url: string): Promise<string[]> => {
   return evolutionChain;
 };
 
-const getPokemonEvolutionInfo = (pokemonId: number): Promise<EvolutionsInfo> =>
-  new Promise((resolve, reject) => {
+async function getPokemonSpeciesUrl(pokemonId: number): Promise<string> {
+  const speciesUrl = await axios
+    .get("https://pokeapi.co/api/v2/pokemon/" + pokemonId)
+    .then((response) => response.data.species.url)
+    .catch(console.log);
+
+  return speciesUrl;
+}
+
+const getPokemonEvolutionInfo = async (
+  pokemonId: number
+): Promise<EvolutionsInfo> => {
+  const speciesUrl = await getPokemonSpeciesUrl(pokemonId);
+
+  return new Promise((resolve, reject) => {
     axios
-      .get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`)
+      .get(speciesUrl)
       .then((response) => response.data.evolution_chain.url)
       .then((url) => {
         evolutionsInfo.url = url;
@@ -86,7 +99,7 @@ const getPokemonEvolutionInfo = (pokemonId: number): Promise<EvolutionsInfo> =>
         reject(error);
       });
   });
-
+};
 onBeforeMount(async function (): Promise<void> {
   await getPokemonEvolutionInfo(props.pokemonId);
   loading.value = false;
@@ -114,10 +127,21 @@ onBeforeMount(async function (): Promise<void> {
 </template>
 
 <style scoped>
+h2 {
+  font-size: 1.3rem;
+  margin-top: 1.5rem;
+}
+
+.evolutions-container {
+  margin-bottom: 10vh;
+}
+
 .evolutions-container > ul {
-  display: flex;
-  justify-content: space-around;
-  width: 29rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-content: start;
+  width: 100%;
+  padding: 0;
 }
 
 .evolutions-container li {
@@ -138,7 +162,6 @@ a {
 .evolution-img {
   width: 6rem;
   height: 6rem;
-  margin: 2rem 0 0;
 }
 
 @media screen and (width <= 811px) {
