@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from "vue";
 import axios from "axios";
-import EvolutionsSectionVue from "@/components/EvolutionsSection.vue";
+
 import PokemonHeader from "../components/PokemonHeader.vue";
+import EvolutionsSectionVue from "@/components/EvolutionsSection.vue";
+import StatsSection from "@/components/StatsSection.vue";
 
 const loading = ref(true);
 
@@ -133,57 +135,39 @@ onBeforeMount(async function () {
 
 <template>
   <PokemonHeader />
-  <main role="main">
-    <div v-if="loading">Loading...</div>
-    <div v-else>
-      <img
-        class="pokemon-img"
-        :src="pokemonInfo.imgSrc"
-        :alt="`${formatPokemonName(pokemonInfo.name)}'s image`"
-      />
-      <section role="region" class="info" aria-labelledby="pokemon-name">
-        <div class="name">
-          <h1 id="pokemon-name">{{ formatPokemonName(pokemonInfo.name) }}</h1>
-        </div>
-        <div class="types-container">
-          <h2>Tipo(s):</h2>
-          <ul>
-            <li
-              class="type"
-              v-for="(type, index) in pokemonInfo.types"
-              :key="index"
-            >
-              {{ type }}
-            </li>
-          </ul>
-        </div>
+  <div v-if="loading">Loading...</div>
+  <main v-else role="main">
+    <img
+      class="pokemon-img"
+      :src="pokemonInfo.imgSrc"
+      :alt="`${formatPokemonName(pokemonInfo.name)}'s image`"
+    />
+    <section role="region" class="info" aria-labelledby="pokemon-name">
+      <h1 id="pokemon-name">{{ formatPokemonName(pokemonInfo.name) }}</h1>
+      <div class="types-container">
+        <h2>Tipo(s):</h2>
+        <ul>
+          <li
+            class="type"
+            v-for="(type, index) in pokemonInfo.types"
+            :key="index"
+          >
+            {{ type }}
+          </li>
+        </ul>
+      </div>
 
-        <div class="stats-container">
-          <h2>Estatísticas</h2>
+      <StatsSection :pokemonStats="pokemonInfo.stats" />
 
-          <table>
-            <tr v-for="(stat, index) in pokemonInfo.stats" :key="index">
-              <td class="stat-title">
-                <b>{{ stat.name }}</b>
-              </td>
-              <td class="stat-value">{{ stat.base_stat }}</td>
-            </tr>
-          </table>
-        </div>
-
-        <EvolutionsSectionVue :pokemonId="pokemonInfo.id" />
-      </section>
-    </div>
+      <EvolutionsSectionVue :pokemonId="pokemonInfo.id" />
+    </section>
   </main>
 </template>
 
 <style scoped>
 h1 {
   font-size: 2rem;
-}
-
-h2 {
-  font-size: 1.3rem;
+  line-height: 1;
 }
 
 li {
@@ -194,28 +178,38 @@ ul {
   padding-left: 0;
 }
 
-div {
-  margin-top: 1rem;
-}
-
 main {
   min-height: 83vh;
   min-width: 95vw;
+  width: 95vw;
+  display: grid;
+  margin: 0 auto;
+  grid-template-areas: "img content";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  padding: 3vh 0;
 }
 
-main > div {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+section {
+  grid-area: "content";
+  justify-self: center;
+  width: 80%;
 }
 
 .pokemon-img {
-  align-self: center;
-  width: 25rem;
-  height: 25rem;
-  margin-right: 10vw;
+  grid-area: "img";
+  justify-self: center;
+  height: auto;
+  width: 80%;
+}
+
+h2 {
+  font-size: 1.3rem;
+  margin-right: 1rem;
+}
+
+.types-container {
+  margin-top: 0.5rem;
 }
 
 .types-container,
@@ -225,34 +219,23 @@ main > div {
 }
 
 .types-container li {
-  padding-left: 1.5rem;
-}
-
-.stat-title {
-  padding-right: 18rem;
-}
-
-table {
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
-}
-
-table .stat-value {
-  text-align: end;
-  padding-right: 0;
+  padding-right: 1rem;
 }
 
 @media screen and (width <= 811px) {
-  main > div {
-    margin: 5vh 0;
+  main {
+    width: 100vw;
+    display: flex;
+    margin: 3vh 0 0;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+    padding: 0;
   }
 
   .pokemon-img {
-    width: 60vw;
+    width: 80%;
     height: auto;
-    margin-bottom: -6vh;
   }
 
   section {
@@ -273,18 +256,10 @@ table .stat-value {
     padding: 0;
     display: flex;
     justify-content: center;
-    margin-top: -7vh;
   }
 
   .types-container li {
     padding: 0 0.5rem;
-  }
-  table {
-    width: 80vw;
-  }
-  .stat-title {
-    padding-right: 0;
-    text-align: left;
   }
 }
 </style>

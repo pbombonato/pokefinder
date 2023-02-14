@@ -109,7 +109,6 @@ onBeforeMount(async function (): Promise<void> {
 <template>
   <div v-if="!loading" class="evolutions-container">
     <h2>Evoluções</h2>
-    <br />
     <ul>
       <li v-for="(evolution, index) in evolutionsInfo.names" :key="index">
         <RouterLink :to="'/' + evolution">
@@ -118,8 +117,7 @@ onBeforeMount(async function (): Promise<void> {
             :alt="evolution"
             class="evolution-img"
           />
-          <br />
-          {{ capitalFirstLetter(evolution) }}
+          <p>{{ capitalFirstLetter(evolution) }}</p>
         </RouterLink>
       </li>
     </ul>
@@ -130,10 +128,6 @@ onBeforeMount(async function (): Promise<void> {
 h2 {
   font-size: 1.3rem;
   margin-top: 1.5rem;
-}
-
-.evolutions-container {
-  margin-bottom: 10vh;
 }
 
 .evolutions-container > ul {
@@ -157,11 +151,12 @@ a {
   color: #000;
   text-align: center;
   font-weight: bold;
+  width: 100%;
 }
 
 .evolution-img {
-  width: 6rem;
-  height: 6rem;
+  width: 100%;
+  height: auto;
 }
 
 @media screen and (width <= 811px) {
@@ -174,14 +169,13 @@ a {
   }
 
   .evolutions-container > ul {
-    margin-top: 2vh;
     display: flex;
     flex-direction: column;
     width: 100%;
   }
 
   .evolutions-container li {
-    margin: 3vh 0;
+    margin: 1vh 0;
   }
 
   .evolution-img {
