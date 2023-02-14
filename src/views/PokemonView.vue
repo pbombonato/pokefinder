@@ -3,6 +3,7 @@ import { ref, onBeforeMount } from "vue";
 import axios from "axios";
 
 import PokemonHeader from "../components/PokemonHeader.vue";
+import PokemonImage from "@/components/PokemonImage.vue";
 import EvolutionsSectionVue from "@/components/EvolutionsSection.vue";
 import StatsSection from "@/components/StatsSection.vue";
 import TypesSection from "@/components/TypesSection.vue";
@@ -138,10 +139,9 @@ onBeforeMount(async function () {
   <PokemonHeader />
   <div v-if="loading">Loading...</div>
   <main v-else role="main">
-    <img
-      class="pokemon-img"
-      :src="pokemonInfo.imgSrc"
-      :alt="`${formatPokemonName(pokemonInfo.name)}'s image`"
+    <PokemonImage
+      :pokemon-img-src="pokemonInfo.imgSrc"
+      :pokemon-name="formatPokemonName(pokemonInfo.name)"
     />
     <section role="region" class="info" aria-labelledby="pokemon-name">
       <h1 id="pokemon-name">{{ formatPokemonName(pokemonInfo.name) }}</h1>
@@ -178,13 +178,6 @@ section {
   width: 80%;
 }
 
-.pokemon-img {
-  grid-area: "img";
-  justify-self: center;
-  height: auto;
-  width: 80%;
-}
-
 @media screen and (width <= 811px) {
   main {
     width: 100vw;
@@ -194,11 +187,6 @@ section {
     justify-content: center;
     align-items: center;
     padding: 0;
-  }
-
-  .pokemon-img {
-    width: 80%;
-    height: auto;
   }
 
   section {
