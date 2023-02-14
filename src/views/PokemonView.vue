@@ -98,8 +98,6 @@ onBeforeMount(async function () {
     .get(`https://pokeapi.co/api/v2/pokemon/${props.pokemonName}`)
     .then((response) => response.data)
     .then((pokemonInfo): PokemonInfo => {
-      console.log(pokemonInfo);
-
       return {
         name: pokemonInfo.name,
         id: pokemonInfo.id,
