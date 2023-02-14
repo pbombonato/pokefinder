@@ -35,11 +35,11 @@ I am a technician in Visual Communication (Graphic design), so I took on the cha
 
 ## Future Improvements
 
-:white_check_mark: Review and fix of Typescript code after Typescript course (Done)
-:black_square_button: Implementation of Pinia, Vitest and Cypress
-:white_check_mark: Separation of components into smaller, more organized pieces
-:black_square_button: Inclusion of icons for design purposes
-:black_square_button: Addition of new functionalities and information
+:white_check_mark: Review and fix of Typescript code after Typescript course (Done) <br />
+:black_square_button: Implementation of Pinia, Vitest and Cypress <br />
+:white_check_mark: Separation of components into smaller, more organized pieces <br />
+:black_square_button: Inclusion of icons for design purposes <br />
+:black_square_button: Addition of new functionalities and information <br />
 
 ## Conclusion
 
@@ -84,12 +84,12 @@ Sou técnico em Comunicação Visual (design gráfico), então aceitei o desafio
 
 ## Melhorias futuras
 
-:white_check_mark: (Feito) Revisão de código Typescript após aprender mais em um curso de Typescript 
-:black_square_button: Implementação de Pinia, Vitest e Cypress
-    - Pesquisei e aprendi sobre eles, porém não consegui implementá-los a tempo
-:white_check_mark: Separação de componentes em peças menores e mais organizadas
-:black_square_button: Inclusão de ícones para fins de design
-:black_square_button: Adição de novas funcionalidades e informações
+:white_check_mark: (Feito) Revisão de código Typescript após aprender mais em um curso de Typescript <br />
+:black_square_button: Implementação de Pinia, Vitest e Cypress <br />
+    - Pesquisei e aprendi sobre eles, porém não consegui implementá-los a tempo <br />
+:white_check_mark: Separação de componentes em peças menores e mais organizadas <br />
+:black_square_button: Inclusão de ícones para fins de design <br />
+:black_square_button: Adição de novas funcionalidades e informações <br />
 
 ## Conclusão
 
