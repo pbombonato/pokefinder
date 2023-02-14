@@ -5,6 +5,7 @@ import axios from "axios";
 import PokemonHeader from "../components/PokemonHeader.vue";
 import EvolutionsSectionVue from "@/components/EvolutionsSection.vue";
 import StatsSection from "@/components/StatsSection.vue";
+import TypesSection from "@/components/TypesSection.vue";
 
 const loading = ref(true);
 
@@ -144,22 +145,11 @@ onBeforeMount(async function () {
     />
     <section role="region" class="info" aria-labelledby="pokemon-name">
       <h1 id="pokemon-name">{{ formatPokemonName(pokemonInfo.name) }}</h1>
-      <div class="types-container">
-        <h2>Tipo(s):</h2>
-        <ul>
-          <li
-            class="type"
-            v-for="(type, index) in pokemonInfo.types"
-            :key="index"
-          >
-            {{ type }}
-          </li>
-        </ul>
-      </div>
+      <TypesSection :pokemon-types="pokemonInfo.types" />
 
-      <StatsSection :pokemonStats="pokemonInfo.stats" />
+      <StatsSection :pokemon-stats="pokemonInfo.stats" />
 
-      <EvolutionsSectionVue :pokemonId="pokemonInfo.id" />
+      <EvolutionsSectionVue :pokemon-id="pokemonInfo.id" />
     </section>
   </main>
 </template>
@@ -168,14 +158,6 @@ onBeforeMount(async function () {
 h1 {
   font-size: 2rem;
   line-height: 1;
-}
-
-li {
-  list-style: none;
-}
-
-ul {
-  padding-left: 0;
 }
 
 main {
@@ -203,25 +185,6 @@ section {
   width: 80%;
 }
 
-h2 {
-  font-size: 1.3rem;
-  margin-right: 1rem;
-}
-
-.types-container {
-  margin-top: 0.5rem;
-}
-
-.types-container,
-.types-container ul {
-  display: flex;
-  align-items: center;
-}
-
-.types-container li {
-  padding-right: 1rem;
-}
-
 @media screen and (width <= 811px) {
   main {
     width: 100vw;
@@ -242,24 +205,6 @@ h2 {
     width: 80vw;
     margin: 5vh 0;
     text-align: center;
-  }
-
-  section > div {
-    margin: 8vh 0;
-  }
-
-  .types-container h2 {
-    display: none;
-  }
-
-  .types-container {
-    padding: 0;
-    display: flex;
-    justify-content: center;
-  }
-
-  .types-container li {
-    padding: 0 0.5rem;
   }
 }
 </style>
