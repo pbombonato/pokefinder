@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, watchEffect } from "vue";
 import { RouterLink } from "vue-router";
 import router from "@/router";
 import axios from "axios";
@@ -45,9 +45,15 @@ onBeforeMount(() => {
   }
 });
 
-function handleInput(): void {
+// function handleInput() {
+//   nextTick(() => {
+//     inputActive.value = input.value ? true : false;
+//   });
+// }
+
+watchEffect(() => {
   inputActive.value = input.value ? true : false;
-}
+});
 
 function handleKeyUp(event: KeyboardEvent): void {
   if (event.key === "Enter" && filteredList().length) {
@@ -115,7 +121,6 @@ function filteredList() {
         v-model="input"
         ref="searchInput"
         placeholder="Pesquisar Pokémon..."
-        @input="handleInput"
         @blur="!input ? (inputActive = false) : ''"
         @keyup="handleKeyUp"
         autofocus
@@ -199,6 +204,7 @@ function filteredList() {
   border-top-right-radius: var(--searchbar-border-radius);
   border-bottom: transparent;
 }
+
 .symbol-logo {
   margin: 0 0.5rem;
   width: 2.2rem;
@@ -259,7 +265,7 @@ input {
   padding-top: 1.3rem;
 }
 
-@media screen and (width <= 811px) {
+@media screen and (width <=811px) {
   .container {
     width: 85vw;
   }
